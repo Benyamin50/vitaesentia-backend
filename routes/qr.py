@@ -73,7 +73,11 @@ def register_qr_routes(app):
                 if not referido_nombre or not referido_apellido or not referido_email or not referido_telefono:
                     mensaje = "Por favor complete todos los campos."
                 elif colab:
-                    ip = request.remote_addr
+                    # Obtener IP real (Render usa proxy)
+                    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+                    if ip and ',' in ip:
+                        ip = ip.split(',')[0].strip()
+                    
                     user_agent = request.headers.get('User-Agent', '')
                     pais, ciudad = obtener_geolocalizacion(ip)
                     tipo_dispositivo, sistema_op, navegador = analizar_user_agent(user_agent)
