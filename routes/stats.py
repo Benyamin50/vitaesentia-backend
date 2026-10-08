@@ -9,9 +9,12 @@ def register_stats_routes(app):
     @require_auth
     def get_stats():
         db = next(get_db())
-        total_colaboradores = db.query(Colaborador).count()
-        total_referidos = db.query(Referido).count()
-        return jsonify({
-            "total_colaboradores": total_colaboradores,
-            "total_referidos": total_referidos
-        })
+        try:
+            total_colaboradores = db.query(Colaborador).count()
+            total_referidos = db.query(Referido).count()
+            return jsonify({
+                "total_colaboradores": total_colaboradores,
+                "total_referidos": total_referidos
+            })
+        finally:
+            db.close()

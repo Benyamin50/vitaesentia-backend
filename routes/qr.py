@@ -116,7 +116,7 @@ def register_qr_routes(app):
                         <head>
                             <meta charset="UTF-8">
                             <script>
-                                window.location.href = 'https://igrafic360.net/VitaesentiaRef/videos?token={token}';
+                                window.location.href = 'https://www.vitaesentia.com/VitaesentiaRef/videos?token={token}';
                             </script>
                         </head>
                         <body style="font-family: sans-serif; text-align: center; padding: 50px; color: #64748B;">
@@ -259,9 +259,11 @@ def register_qr_routes(app):
             return jsonify({"valido": False}), 400
         
         db = next(get_db())
-        referido = db.query(Referido).filter(Referido.video_token == token).first()
-        db.close()
-        
-        if referido:
-            return jsonify({"valido": True})
-        return jsonify({"valido": False}), 401
+        try:
+            referido = db.query(Referido).filter(Referido.video_token == token).first()
+            
+            if referido:
+                return jsonify({"valido": True})
+            return jsonify({"valido": False}), 401
+        finally:
+            db.close()
