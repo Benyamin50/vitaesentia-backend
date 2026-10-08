@@ -4,6 +4,8 @@ from models import Colaborador, Referido
 import datetime
 import requests
 import secrets
+# IMPORTANTE: Importamos cross_origin para evitar que el navegador bloquee la petición
+from flask_cors import cross_origin 
 
 def obtener_geolocalizacion(ip):
     try:
@@ -113,17 +115,26 @@ def register_qr_routes(app):
                         db.add(referido)
                         db.commit()
                         
+                        # REDIRECCIÓN INTELIGENTE (Detecta si estás en local o en WePanel)
+                        host_origen = request.headers.get('Origin', request.host_url)
+                        es_local = 'localhost' in host_origen or '127.0.0.1' in host_origen
+                        
+                        if es_local:
+                            url_redirect = f"http://localhost:5173/VitaesentiaRef/videos-referidos?token={token}"
+                        else:
+                            url_redirect = f"https://www.vitaesentia.com/VitaesentiaRef/videos-referidos?token={token}"
+                        
                         return f'''
                         <!DOCTYPE html>
                         <html>
                         <head>
                             <meta charset="UTF-8">
                             <script>
-                                window.location.href = 'https://www.vitaesentia.com/VitaesentiaRef/videos-referidos?token={token}';
+                                window.location.href = '{url_redirect}';
                             </script>
                         </head>
                         <body style="font-family: sans-serif; text-align: center; padding: 50px; color: #64748B;">
-                            Cargando videos...
+                            Redirigiendo a los videos...
                         </body>
                         </html>
                         '''
@@ -254,7 +265,8 @@ def register_qr_routes(app):
         </html>
         '''
 
-    @app.route('/verificar-token', methods=['GET'])
+    @app.route('/verificar-token', methods=['GET', 'OPTIONS'])
+    @cross_origin() # <--- ESTO ES LO QUE SOLUCIONA EL BLOQUEO
     def verificar_token():
         token = request.args.get('token', '')
         
