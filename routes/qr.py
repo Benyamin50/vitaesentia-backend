@@ -73,7 +73,6 @@ def register_qr_routes(app):
                 if not referido_nombre or not referido_apellido or not referido_email or not referido_telefono:
                     mensaje = "Por favor complete todos los campos."
                 elif colab:
-                    # Obtener IP real (Render usa proxy)
                     ip = request.headers.get('X-Forwarded-For', request.remote_addr)
                     if ip and ',' in ip:
                         ip = ip.split(',')[0].strip()
@@ -120,7 +119,7 @@ def register_qr_routes(app):
                         <head>
                             <meta charset="UTF-8">
                             <script>
-                                window.location.href = 'https://www.vitaesentia.com/VitaesentiaRef/videos?token={token}';
+                                window.location.href = 'https://www.vitaesentia.com/VitaesentiaRef/videos-referidos?token={token}';
                             </script>
                         </head>
                         <body style="font-family: sans-serif; text-align: center; padding: 50px; color: #64748B;">
