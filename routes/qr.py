@@ -4,8 +4,6 @@ from models import Colaborador, Referido
 import datetime
 import requests
 import secrets
-# IMPORTANTE: Importamos cross_origin para evitar que el navegador bloquee la petición
-from flask_cors import cross_origin 
 
 def obtener_geolocalizacion(ip):
     try:
@@ -120,15 +118,9 @@ def register_qr_routes(app):
                         es_local = 'localhost' in host_origen or '127.0.0.1' in host_origen
                         
                         if es_local:
-<<<<<<< HEAD
                             url_redirect = f"http://localhost:5173/vitaesentiaref/videos-referidos?token={token}"
                         else:
                             url_redirect = f"https://www.vitaesentia.com/vitaesentiaref/videos-referidos?token={token}"
-=======
-                            url_redirect = f"http://localhost:5173/VitaesentiaRef/videos-referidos?token={token}"
-                        else:
-                            url_redirect = f"https://www.vitaesentia.com/VitaesentiaRef/videos-referidos?token={token}"
->>>>>>> ab932c0d0e80a19c1340bd91e83db35e1a42b65c
                         
                         return f'''
                         <!DOCTYPE html>
@@ -272,10 +264,6 @@ def register_qr_routes(app):
         '''
 
     @app.route('/verificar-token', methods=['GET', 'OPTIONS'])
-<<<<<<< HEAD
-=======
-    @cross_origin() # <--- ESTO ES LO QUE SOLUCIONA EL BLOQUEO
->>>>>>> ab932c0d0e80a19c1340bd91e83db35e1a42b65c
     def verificar_token():
         token = request.args.get('token', '')
         
